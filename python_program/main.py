@@ -8,7 +8,6 @@ class webscraper:
         self.data = []
 
     def Browser(self, product):
-        #headless=False, slow_mo = 2000
         self.product = product
         with sync_playwright() as p:
             user_agents = [
@@ -34,26 +33,13 @@ class webscraper:
             
             page.evaluate("window.scrollBy(0, document.body.scrollHeight)")
 
-            #For product name
-            #heads = page.locator("//h2[contains(@class,'a-size-medium a-spacing-none a-color-base a-text-normal')]").all()
-            #for head in heads:
-                #print(head.text_content())
-                #self.product_name.append(head.text_content())
-
-            #For price
-            #page.wait_for_selector("//span[contains(@class, 'a-price-whole')]", timeout= 30000)
 
             page.evaluate("window.scrollBy(0, document.body.scrollHeight)")
 
-            #prices = page.locator("//span[contains(@class, 'a-price-whole')]").all()
-
-            #for price in prices[3:24]:
-                #self.price.append(price.text_content())
-
-            #For Ratings
+           
 
             products = page.locator("//div[contains(@class,'a-section a-spacing-small a-spacing-top-small')]").all()
-            #products = page.locator("div[data-component-type='s-search-result']").all()
+            
 
             for product in products:
                 product_name = product.locator("h2 span").text_content().strip() if product.locator("h2 span").count() > 0 else "N/A"
@@ -69,41 +55,17 @@ class webscraper:
 
             page.evaluate("window.scrollBy(0, document.body.scrollHeight)")
 
-            #Ratings = page.locator("//div[contains(@class, 'a-row a-size-small')]").all()
-
-            #for Rating in Ratings[0:24]:
-                #self.ratings.append(Rating.text_content())
 
             
             page.close()
 
     def Data_in_csv(self):
 
-        #If the data has unequal lenghts
-        #max_len = max(len(self.product_name), len(self.price), len(self.ratings))
-
-        #while len(self.product_name) < max_len:
-            #self.product_name.append("N/A")
-
-        #while len(self.price) < max_len:
-           # self.price.append("N/A")
-
-        #while len(self.ratings) < max_len:
-            #self.ratings.append("N/A")
-
-        #self.df = pd.DataFrame({
-            #"Product" : self.product_name,
-            #"Price" : self.price,
-            #"Ratings" : self.ratings
-        #})
         df = pd.DataFrame(self.data)
 
         df.to_csv(f"{self.product}.csv", index = False)
         print(df)
-        #print(self.product_name)
-        #print(self.price)
-        #print(len(self.product_name))
-        #print(len(self.price))
+
 
 
 if __name__ == "__main__":
